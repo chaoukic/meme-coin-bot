@@ -1,0 +1,202 @@
+[
+ {
+  "metrics": {
+   "price": 0.000306,
+   "liq": 60556.16,
+   "vol_h1": 1502906.85,
+   "vol_h24": 1502906.85,
+   "mcap": 306098.0,
+   "age_min": 14.591833,
+   "buys_h1": 4965.0,
+   "sells_h1": 2921.0,
+   "chg_m5": null,
+   "chg_h1": 2909.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5757716708807736,
+  "token": "DyWqopE7UjSCNsM13kvfpVWFzPeg9MtuwffDDUkcGr5z",
+  "ts": 1791047583.5100274
+ },
+ {
+  "metrics": {
+   "price": 0.000422,
+   "liq": 65797.37,
+   "vol_h1": 148022.02,
+   "vol_h24": 4030173.7,
+   "mcap": 406706.0,
+   "age_min": 626.941937,
+   "buys_h1": 747.0,
+   "sells_h1": 784.0,
+   "chg_m5": null,
+   "chg_h1": 67.53,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.3933489194818473,
+  "token": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+  "ts": 1790957654.0891974
+ },
+ {
+  "metrics": {
+   "price": 0.000469,
+   "liq": 60417.37,
+   "vol_h1": 21498.73,
+   "vol_h24": 21498.73,
+   "mcap": 469345.0,
+   "age_min": 12.259362,
+   "buys_h1": 1164.0,
+   "sells_h1": 1107.0,
+   "chg_m5": null,
+   "chg_h1": 857.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5836629589676502,
+  "token": "2s2M3fRLZ1eLtJuWqeCCV5MAiRy41nsFngskBdrzpump",
+  "ts": 1790973421.5617797
+ },
+ {
+  "metrics": {
+   "price": 9.9e-05,
+   "liq": 31578.35,
+   "vol_h1": 6354.53,
+   "vol_h24": 1338143.36,
+   "mcap": 92693.0,
+   "age_min": 1167.156928,
+   "buys_h1": 29.0,
+   "sells_h1": 31.0,
+   "chg_m5": null,
+   "chg_h1": 7.16,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.36416567157202934,
+  "token": "CwSNUU54NLJt4qbGg5S8TUzJYxjYAfL4VrPr7zvJpump",
+  "ts": 1790962612.0741081
+ },
+ {
+  "metrics": {
+   "price": 0.000417,
+   "liq": 56926.91,
+   "vol_h1": 21738.39,
+   "vol_h24": 21738.39,
+   "mcap": 417417.0,
+   "age_min": 11.336125,
+   "buys_h1": 4611.0,
+   "sells_h1": 3486.0,
+   "chg_m5": null,
+   "chg_h1": 750.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5871641283866995,
+  "token": "J7ezhCE5F8zn3KLzAdT176zxjZwKgxQiocP8gt8CxFhE",
+  "ts": 1790885039.1675212
+ },
+ {
+  "metrics": {
+   "price": 0.000133,
+   "liq": 32650.99,
+   "vol_h1": 699024.97,
+   "vol_h24": 699024.97,
+   "mcap": 133208.0,
+   "age_min": 17.202786,
+   "buys_h1": 3030.0,
+   "sells_h1": 2058.0,
+   "chg_m5": null,
+   "chg_h1": 170.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5681954665906271,
+  "token": "7keARBfdz79MdMTf3fZrswyvLgAs3Qi8JiRmy3u2pump",
+  "ts": 1790957486.1671941
+ },
+ {
+  "metrics": {
+   "price": 0.000497,
+   "liq": 62406.5,
+   "vol_h1": 27910.3,
+   "vol_h24": 27910.3,
+   "mcap": 496832.0,
+   "age_min": 11.85643,
+   "buys_h1": 3719.0,
+   "sells_h1": 3362.0,
+   "chg_m5": null,
+   "chg_h1": 906.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.585161069327804,
+  "token": "BaKUCzR4yjfMgSWHUWC3q7REnJJwpDnfZY9amwExpump",
+  "ts": 1790903442.3858085
+ },
+ {
+  "metrics": {
+   "price": 0.000293,
+   "liq": 48302.98,
+   "vol_h1": 418228.45,
+   "vol_h24": 418228.45,
+   "mcap": 293271.0,
+   "age_min": 19.98609,
+   "buys_h1": 5396.0,
+   "sells_h1": 1206.0,
+   "chg_m5": null,
+   "chg_h1": 244.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5612046572152662,
+  "token": "66hK2GEsF5djkH6JWYCVKytuhz5Hc6bvsDQzRgqrpump",
+  "ts": 1790892087.165438
+ },
+ {
+  "metrics": {
+   "price": 0.000163,
+   "liq": 35382.41,
+   "vol_h1": 271758.21,
+   "vol_h24": 271758.21,
+   "mcap": 163200.0,
+   "age_min": 10.420133,
+   "buys_h1": 3749.0,
+   "sells_h1": 466.0,
+   "chg_m5": null,
+   "chg_h1": 75.03,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5908972574621524,
+  "token": "7A6pgYtKkN75URKFyrStMBzkBYoceDk4Wo2Es1Ctpump",
+  "ts": 1790884493.2079883
+ },
+ {
+  "metrics": {
+   "price": 0.000813,
+   "liq": 79969.8,
+   "vol_h1": 34498.27,
+   "vol_h24": 34498.27,
+   "mcap": 812683.0,
+   "age_min": 10.361465,
+   "buys_h1": 2430.0,
+   "sells_h1": 1013.0,
+   "chg_m5": null,
+   "chg_h1": 1562.0,
+   "chg_h24": null,
+   "chain": "solana",
+   "bucket": "new"
+  },
+  "expected_prob": 0.5911460978028081,
+  "token": "2wSyGzcCtzw8deZpHYob3QhwstqTV8Ljmhxwh4qJverW",
+  "ts": 1790841846.6879485
+ }
+]
