@@ -1,0 +1,41 @@
+/* =============================================================
+   Live-price additions (open positions, hero balance, P&L tile)
+   and the pause banner. Kept separate from style.css on purpose;
+   reuses its theme variables (soft dark theme, muted teal accent).
+   Classes used by app.js: live-badge, live-label, live-snap, live-tag,
+   live-dot, live-flash-up, live-flash-down, pause-banner.
+   ============================================================= */
+
+/* LIVE badge in the "Open positions" heading */
+.live-badge { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-weight: 500; font-size: .8rem; }
+.live-label { color: var(--profit, #1A9E5C); font-size: .72rem; font-weight: 700; letter-spacing: .8px; }
+.live-snap  { color: var(--warn, #B7791F); font-size: .7rem; font-weight: 650; letter-spacing: .4px; text-transform: uppercase;
+              background: var(--amber-bg); border-radius: 999px; padding: 1px 9px; }
+.live-tag   { color: var(--profit, #1A9E5C); opacity: .85; }
+
+/* soft pulsing dot */
+.live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--profit, #1A9E5C);
+            box-shadow: 0 0 0 0 rgba(116,198,157,.3); animation: live-pulse 2s ease-out infinite; vertical-align: middle; }
+.hero .live-dot { width: 10px; height: 10px; vertical-align: 8px; margin-left: 4px; }
+@keyframes live-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(116,198,157,.3); }
+  70%  { box-shadow: 0 0 0 7px rgba(116,198,157,0); }
+  100% { box-shadow: 0 0 0 0 rgba(116,198,157,0); }
+}
+
+/* subtle flash when a P&L value changes */
+.live-flash-up   { animation: live-flash-up 1.2s ease-out; }
+.live-flash-down { animation: live-flash-down 1.2s ease-out; }
+@keyframes live-flash-up   { from { background: var(--green-bg2); } to { background: transparent; } }
+@keyframes live-flash-down { from { background: var(--red-bg2); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .live-dot, .live-flash-up, .live-flash-down { animation: none; }
+}
+
+@media (max-width: 760px) {
+  .live-badge { flex-basis: 100%; }
+}
+
+/* pause banner (manual /pause via Telegram or daily loss cap) */
+.pause-banner { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); border-radius: 14px; padding: 11px 16px; font-size: .9rem; font-weight: 500;
+                border-left: 3px solid var(--loss, #D64545); }

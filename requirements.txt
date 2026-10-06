@@ -1,0 +1,25 @@
+# Memebot runtime deps (bot, web, publish, telegram). Pinned to the versions installed 2026-10-06 (Python 3.13).
+# run.sh rebuilds .venv from this file automatically if .venv is missing or broken.
+# playwright is NOT listed: it is only used by the screenshot tools.
+requests==2.34.2
+fastapi==0.142.2
+uvicorn==0.54.0
+solders==0.29.0
+base58==2.1.1
+# transitive deps (pinned for a reproducible rebuild)
+annotated-doc==0.0.5
+annotated-types==0.8.0
+anyio==4.15.1
+certifi==2026.7.22
+charset-normalizer==3.5.2
+click==8.5.0
+h11==0.16.0
+idna==3.20
+jsonalias==0.1.1
+opentelemetry-api==1.45.0
+pydantic==2.13.5
+pydantic_core==2.46.5
+starlette==1.7.0
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+urllib3==2.8.0

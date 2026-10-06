@@ -1,0 +1,208 @@
+# ============================================================
+#  Meme coin scanner + PAPER trader configuration
+#  PAPER TRADING ONLY - fake money, no wallets, no real trades.
+#  Edit values and save; the bot re-reads this file every cycle
+#  (no restart needed). Percentages are written as plain numbers
+#  (5 = 5%).
+# ============================================================
+
+[scanner]
+scan_interval_sec      = 90     # how often to look for new tokens
+new_pool_pages         = 2      # GeckoTerminal "new pools" pages per cycle (20 pools each)
+include_trending       = true   # also look at GeckoTerminal trending Solana pools
+include_top_volume     = false  # also look at GeckoTerminal top-24h-volume Solana pools
+max_watchlist_eval     = 600    # max tokens re-checked per cycle. Back to 600 on Oct 2 after the switch to Jupiter (100 per call = 6 calls); was 300 while on DexScreener only (30 per call, 429s)
+contract_checks_per_cycle = 6   # max expensive GeckoTerminal/RPC safety lookups per cycle
+holder_retries_per_cycle = 6    # retries of the on-chain top-holder lookup when the RPC refused it
+
+[filters]
+min_pool_age_min       = 10     # younger pools wait ("pending"), not rejected
+max_pool_age_hours     = 24     # older pools are out of the window
+min_liquidity_usd      = 30000  # raised from 15000 on 2026-09-26 (small pools were rugged)
+min_volume_h1_usd      = 5000
+min_volume_h24_usd     = 20000
+min_market_cap_usd     = 50000
+max_market_cap_usd     = 10000000
+max_price_change_h1_pct = 75    # skip tokens already up more than this in the last hour (late entry)
+min_buys_h1            = 10     # need real buying...
+min_sells_h1           = 5      # ...and real selling (near-zero sells = possible honeypot)
+min_sell_buy_ratio     = 0.2    # sells / buys over 1h must be at least this
+min_txns_h24           = 150
+require_mint_revoked   = true
+require_freeze_revoked = true
+reject_honeypot        = true   # reject if GeckoTerminal flags is_honeypot = yes
+max_top_holder_pct     = 5      # biggest single wallet (pool/LP accounts excluded)
+max_top10_pct          = 60     # top 10 wallets combined (pool/LP excluded)
+min_holders            = 100    # only applied when a holder count is known
+# Holder trend: price should not run up while holder count stays flat
+trend_min_interval_min = 5      # need two holder snapshots at least this far apart
+trend_price_up_pct     = 10     # if price rose more than this ...
+trend_min_holder_growth_pct = 2 # ... holders must have grown at least this much
+trend_max_holder_drop_pct   = 5 # reject if holders fell more than this
+min_score_to_buy       = 55     # transparent rule-based score, 0-100
+
+[paper]
+starting_balance_usd   = 1000
+max_open_positions     = 3
+position_pct_of_balance = 2     # each trade uses 2% of current equity
+max_pct_of_pool_liquidity = 2   # and never more than 2% of the pool's liquidity
+slippage_pct           = 1.0    # assumed on every buy and sell
+fee_pct                = 0.5    # assumed on every buy and sell (1.5% total per side)
+take_profit_pct        = 50     # first take-profit level
+take_profit_sell_fraction = 0.5 # sell this share of the position at the first TP
+take_profit2_pct       = 150    # sell everything that is left here
+stop_loss_pct          = 25     # exit if price falls this far below entry
+trailing_activate_pct  = 20     # trailing stop switches on after this gain (30 -> 20 on Oct 3, Analysis Bot, Sammy approved)
+trailing_stop_pct      = 20     # then exits if price falls this far from the peak
+volume_decay_ratio     = 0.2    # exit if recent volume < 20% of its average pace
+volume_decay_min_hold_min = 30  # don't apply volume-decay exit before this
+max_hold_hours         = 24
+daily_loss_cap_pct     = 5      # SOFT daily cap: once today's loss reaches 5% of day-start equity, only high-score entries at reduced size
+cap_min_score          = 75     # ...while the soft cap is active, only candidates with score >= this may be bought
+cap_size_factor        = 0.5    # ...and at this fraction of the normal position size (0.5 = half)
+daily_hard_stop_pct    = 10     # HARD daily floor: at a 10% loss, no new entries at all until midnight Toronto time
+reentry_cooldown_hours = 24     # don't buy the same token again within this window
+update_interval_sec    = 45     # how often open positions are re-priced
+
+[apis]
+geckoterminal_per_min  = 8      # documented ~30/min, but 429s were seen at 12/min
+dexscreener_per_min    = 60     # lowered Oct 2 from 250: machine was getting DexScreener 429s (shared with Cross Chain bot)
+scan_source            = "jupiter"  # Oct 2 (Sammy): watchlist re-checks use Jupiter Tokens API v2 (100 coins per call) first;
+                                    # coins Jupiter can't settle, and any Jupiter batch that fails, use DexScreener. "dexscreener" = old behaviour
+dexscreener_pause_after_429_sec = 180  # after a DexScreener 429, stop calling it for 3 min (doubles while 429s continue)...
+dexscreener_pause_max_sec       = 900  # ...up to 15 min. Meanwhile: double-checks wait, prices/buys use Jupiter
+jupiter_per_min        = 40     # Jupiter scanning calls/min (key allows 60/min shared with real-money quotes/prices; capped at 50 in code)
+rpc_per_sec            = 1
+rpc_endpoints = [
+  "https://public.rpc.solanavibestation.com",
+  "https://api.mainnet-beta.solana.com",
+]
+
+[guard]
+# Price-sanity safeguards (added 2026-09-26). No buy/sell/TP/stop/trailing decision is made on a reading that fails them.
+enabled                  = true
+max_jump_up_factor       = 5.0    # a reading more than 5x the last good price is "extreme"
+max_drop_pct             = 50     # a reading more than 50% below the last good price is "extreme"
+confirm_tolerance_pct    = 25     # an extreme reading must be confirmed by GeckoTerminal or the next check within this %
+confirm_window_sec       = 300    # ...and within this many seconds
+stale_gap_min            = 10     # after a data gap/freeze this long, the first reading is not acted on
+liq_drain_pct            = 80     # pool liquidity down 80%+ from entry = drained (rug)
+min_exit_liquidity_usd   = 1000   # pool liquidity below this = drained (rug)
+max_supply_deviation_pct = 50     # market cap / price must imply the same token supply as before
+use_second_source        = true   # ask GeckoTerminal to confirm extreme readings and fresh entry prices
+fill_cap                 = true   # paper fills limited by constant-product price impact on the pool
+entry_price_tolerance_pct = 20    # fresh re-read right before a buy must be within 20% of the scan price
+block_same_symbol        = true   # one position per ticker too (copycat coins), incl. the re-entry cooldown
+volume_decay_confirm     = true   # volume-decay exit needs 2 consecutive agreeing checks
+
+[entry]
+# Pre-buy fallback (Oct 2, Sammy): every buy first re-reads the pool on DexScreener. If that re-read FAILS (429 / error,
+# not "pool not found"), the coin is checked with Jupiter instead (jupcheck.py): fresh Jupiter reading through the same
+# filters + two live swap quotes (never executed). All other guards (price check vs scan, GeckoTerminal cross-check,
+# one position per coin, daily caps, RugCheck - forced fail-closed here) still apply.
+prebuy_fallback        = "jupiter_quote"  # "off" = no buy while DexScreener's re-read fails (old behaviour)
+fallback_depth_usd     = 30     # depth quote size; trade-size quote = [live] trade_usd
+fallback_max_trade_impact_pct = 2.0  # trade-size cost vs Jupiter price, and Jupiter's price impact at both sizes, must be <= this
+fallback_min_jup_liq_factor   = 0.5  # Jupiter's own liquidity must be >= this x [filters] min_liquidity_usd (Jupiter shows ~half of DexScreener)
+# depth rule (no setting): the $30-vs-$5 extra cost must imply >= min_liquidity_usd of constant-product liquidity
+# (L = 2*D*(1-i)/i, i.e. <= 0.2% at $30 for $30,000)
+
+[rugcheck]
+# Pre-buy rug check via RugCheck (added 2026-09-26 after 9 rug exits). Applies to paper AND real buys.
+enabled           = true
+min_lp_locked_pct = 90     # pool money (LP) must be at least 90% locked or burned, so the creator can't pull it
+reject_danger     = true   # skip any coin RugCheck marks with a "danger" risk (big single holder, top-10 too high, low liquidity...)
+fail_closed       = true   # if RugCheck can't be reached, don't buy
+
+[established]
+# Oct 2 (Sammy): separate PAPER-ONLY strategy for older Solana coins (first pool > 24h old, days to months).
+# Real money: never - live.py refuses any position that is not the new-coin strategy, whatever this says.
+enabled               = true
+paper_only            = true    # informational: enforced in code (live.paper_only_strategy), cannot be switched off here
+starting_balance_usd  = 300     # its own fake money, separate from [paper] (own P&L, own daily stop)
+position_usd          = 15      # fake dollars per trade
+max_open              = 3
+max_entries_per_round = 1
+max_pct_of_pool_liquidity = 1
+slippage_pct          = 1.0     # same paper cost assumptions as the new-coin strategy (1.5% per side)
+fee_pct               = 0.5
+discovery_interval_min = 10     # one round = 6 Jupiter list calls + at most 1 batch re-check (shared 40/min Jupiter limiter)
+update_interval_sec   = 60      # open older-coin positions re-priced with ONE Jupiter batch call
+watch_hours           = 24      # coins that passed the quality filters are re-checked this long after they leave the lists
+lists = ["toporganicscore/1h", "toporganicscore/6h", "toporganicscore/24h", "toptrending/1h", "toptrending/6h", "toptrending/24h"]
+# quality (Jupiter data: liquidity/volume are coin-wide, all pools)
+min_pool_age_hours    = 24
+max_pool_age_days     = 1095
+min_liquidity_usd     = 100000
+min_volume_h24_usd    = 250000
+min_volume_h1_usd     = 5000
+min_market_cap_usd    = 1000000
+max_market_cap_usd    = 500000000
+min_holders           = 1000
+min_organic_score     = 50      # Jupiter organicScore 0-100 (real wallets vs bots)
+max_top_holders_pct   = 50      # Jupiter audit topHoldersPercentage
+min_buys_h1           = 20
+min_sells_h1          = 10
+require_mint_revoked  = true
+require_freeze_revoked = true
+exclude_tags = ["major", "stable", "lst", "original-lst", "yield", "yb", "jup-lend-earn", "rwa", "stocks", "xstocks", "prestocks", "equities"]
+# entry timing: buy a pullback that is bouncing, never a pump
+pullback_min_pct      = 3       # 6h change must be -3% ...
+pullback_max_pct      = 25      # ... to -25% (deeper = falling knife)
+bounce_min_h1_pct     = 0.5     # 1h change at least +0.5% (buyers back)
+max_h1_pump_pct       = 8       # but not more than +8% in 1h (don't chase)
+min_m5_pct            = -1.0    # not dropping right now
+min_h24_change_pct    = -35     # skip collapses
+max_h24_change_pct    = 100     # skip coins still in a launch pump
+min_net_buyers_h1     = 1
+rugcheck_lp_rule      = "any"   # "any" = at least one pool >= [rugcheck] min_lp_locked_pct (CLMM/DLMM pools can't be locked); "pool" = main rule
+entry_price_agree_pct = 5       # Jupiter price vs DexScreener's deepest pool at entry
+# Oct 3 (Sammy): when DexScreener is paused/429, check with Jupiter quotes instead (jupcheck.quote_check), like new coins
+prebuy_fallback       = "jupiter_quote"  # "off" = skip the buy while DexScreener is busy (old behaviour)
+fallback_depth_usd    = 150     # depth quote size (trade-size quote = position_usd); $150 vs $15 resolves ~$100k pools (<= 0.3% impact)
+fallback_max_trade_impact_pct = 1.5  # $15 quote cost vs Jupiter price (fees incl.) and Jupiter's impact at both sizes
+fallback_min_liq_usd  = 100000  # liquidity implied by the depth quote (constant-product equivalent) must be >= this
+fallback_price_tolerance_pct = 5  # fresh Jupiter price vs scan price, and vs GeckoTerminal when it answers
+fallback_gt_check     = true    # one GeckoTerminal call (skipped while it is rate-limited)
+# exits (from the Cross Chain bot's established bucket)
+take_profit_pct       = 12
+take_profit_sell_fraction = 0.5
+take_profit2_pct      = 25
+stop_loss_pct         = 8
+trailing_activate_pct = 8
+trailing_stop_pct     = 5
+max_hold_hours        = 168     # 7 days
+volume_decay_ratio    = 0       # 0 = off
+daily_stop_pct        = 5       # own daily stop (of the older-coin fake balance); does not touch the new-coin caps
+reentry_cooldown_hours = 24
+
+[live]
+# REAL-MONEY TEST. Real trades copy the paper bot's buys and sells with small, fixed sizes.
+# Wallet: dedicated test wallet only (see README). Emergency stop: create the file logs/live_kill.
+enabled          = true    # master switch - nothing real happens while this is false
+trade_usd        = 5       # real dollars per buy
+budget_usd       = 130     # lifetime cap on real buys: $90 spent by Oct 2 + $40 more (Sammy, Oct 2)
+max_open         = 3       # max real positions at once
+buy_slippage_bps = [300, 600, 1000]  # real buys try 3%; if the price moved and the swap is rejected (nothing spent), retry at 6%, then 10%
+sell_slippage_bps = [300, 800, 1500]  # real sells retry with 3%, then 8%, then 15% slippage
+min_sol_reserve  = 0.02    # always keep this much SOL for transaction fees
+# Exchange-side stop-loss TRIAL (Oct 2, Sammy): after a confirmed real buy, a sell-below order on Jupiter (Trigger V2) at
+# entry x (1 - stop_loss_pct). Applies to the next trigger_stops_trial_max real buys only, then stays off until raised.
+# NOTE: Jupiter's minimum order is $10, so with trade_usd = 5 no order can be placed (the trial is not used up; Telegram says so).
+trigger_stops    = true
+trigger_stops_trial_max = 1
+trigger_slippage_bps = 1500   # stop order slippage (Jupiter default for stops is 2000); same as the bot's widest sell retry
+trigger_trail_min_move_pct = 5    # move the Jupiter stop up only on >= 5% steps...
+trigger_trail_min_interval_sec = 300  # ...and at most every 5 minutes
+trigger_check_interval_sec = 60   # how often order history is checked for fills / expiry
+trigger_min_order_usd = 10.5      # Jupiter rejects orders under $10 (small safety margin)
+trigger_sol_cost = 0.004          # SOL kept free for the vault deposit (token-account rent ~0.002-0.003) + withdrawal fees
+daily_stop_pct   = 10      # REAL wallet daily stop: no new real buys once it is 10% below its start-of-day value (Toronto). Separate from the paper caps.
+
+[scoring]
+# Side-by-side scoring test (Oct 3 2026, Sammy approved; spec analysis-bot/scoring/SIDE_BY_SIDE_SPEC.md).
+# A second PAPER-ONLY account ($1,000) sees the same candidates and buys on the new score (scoring_v1, copied into
+# scoring_v1/): new score >= 48.4 (>= 55.5 at half size while its own daily soft cap is on). Thresholds come from the
+# model file. It can NEVER trade real money (hard block in live.py). If the startup self-test fails it stays off.
+enabled = true
+starting_balance_usd = 1000
